@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Edit PDFs — WeLovePDF</title>
+<meta name="description" content="Sign, redact, add text, watermark, crop, add page numbers and more — 100% in your browser.">
+<link rel="stylesheet" href="style.css">
+<script src="utils.js" defer></script>
+<style>
+.page-hero h1 span{color:var(--teal)}
+.tool-row:hover{border-color:rgba(34,211,184,.35);box-shadow:0 6px 28px rgba(0,0,0,.22)}
+.tool-row:hover::before{background:var(--teal)}
+.tool-row-icon{background:rgba(34,211,184,.08);border:1px solid rgba(34,211,184,.14)}
+.tool-row:hover .tool-row-arrow{color:var(--teal)}
+.page-badge{background:rgba(34,211,184,.08);border:1px solid rgba(34,211,184,.22);color:var(--teal)}
+
+/* HOT & NEW labels on tool rows */
+.row-badge{font-size:0.58rem;font-weight:700;padding:2px 7px;border-radius:20px;letter-spacing:0.04em;text-transform:uppercase;flex-shrink:0}
+.row-badge-hot{background:rgba(248,113,113,0.1);color:var(--rose);border:1px solid rgba(248,113,113,0.18)}
+.row-badge-new{background:rgba(34,211,184,0.1);color:var(--teal);border:1px solid rgba(34,211,184,0.18)}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a class="logo" href="index.html"><div class="logo-mark">W</div><span class="logo-name">We<span>Love</span>PDF</span></a>
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">All Tools</a>
+      <a class="nav-link" href="organize.html">Organize</a>
+      <a class="nav-link" href="convert.html">Convert</a>
+      <a class="nav-link active" href="edit.html">Edit</a>
+      <a class="nav-link nav-dash" href="dashboard.html">📊 Dashboard</a>
+    </div>
+    <button class="nav-ham" id="navHam"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a class="nav-link" href="index.html">🏠 All Tools</a>
+  <a class="nav-link" href="organize.html">📑 Organize</a>
+  <a class="nav-link" href="convert.html">🔄 Convert</a>
+  <a class="nav-link active" href="edit.html">✏️ Edit</a>
+  <a class="nav-link nav-dash" href="dashboard.html">📊 Dashboard</a>
+</div>
+
+<div class="page-wrap">
+  <a class="back-btn" href="index.html">← All Tools</a>
+
+  <div class="page-hero anim-up">
+    <div class="page-badge">✏️ &nbsp;Edit & Annotate Tools</div>
+    <h1>Edit Your <span>PDF Content</span></h1>
+    <p>Sign, redact, annotate, watermark and modify PDF content. Signature placement is pixel-accurate — drag to exact position. Files never leave your browser.</p>
+  </div>
+
+  <!-- ANNOTATION sub-group -->
+  <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--txt3);margin:0 0 12px;display:flex;align-items:center;gap:10px">
+    <span>Annotate & Sign</span>
+    <div style="flex:1;height:1px;background:var(--border)"></div>
+  </div>
+  <div class="tools-list stagger" style="margin-bottom:28px">
+
+    <a class="tool-row" href="tool.html?t=sign">
+      <div class="tool-row-icon">✍️</div>
+      <div class="tool-row-info">
+        <h3>Sign PDF <span class="row-badge row-badge-hot">🔥 Hot</span> <span class="info-icon" onclick="event.preventDefault()" tabindex="0">i<span class="tooltip">Draw your signature on the pad OR upload a signature image. Then drag it precisely onto any page. Resize using corner handle.</span></span></h3>
+        <p>Draw signature & drag to exact position</p>
+      </div>
+      <span class="tool-row-arrow">→</span>
+    </a>
+
+    <a class="tool-row" href="tool.html?t=addtext">
+      <div class="tool-row-icon">📝</div>
+      <div class="tool-row-info">
+        <h3>Add Text <span class="row-badge row-badge-new">✨ New</span> <span class="info-icon" onclick="event.preventDefault()" tabindex="0">i<span class="tooltip">Click the page to add a text box anywhere. Freely drag it to exact position. Choose font, size and colour before placing.</span></span></h3>
+        <p>Place freely movable text on any page</p>
+      </div>
+      <span class="tool-row-arrow">→</span>
+    </a>
+
+    <a class="tool-row" href="tool.html?t=redact">
+      <div class="tool-row-icon">⬛</div>
+      <div class="tool-row-info">
+        <h3>Redact PDF <span class="row-badge row-badge-new">✨ New</span> <span class="info-icon" onclick="event.preventDefault()" tabindex="0">i<span class="tooltip">Click and drag to draw a black box over sensitive content. Add as many boxes as needed on any page. Permanently burns into PDF.</span></span></h3>
+        <p>Draw black boxes over sensitive content</p>
+      </div>
+      <span class="tool-row-arrow">→</span>
+    </a>
+
+  </div>
+
+  <!-- MODIFY sub-group -->
+  <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--txt3);margin:0 0 12px;display:flex;align-items:center;gap:10px">
+    <span>Modify Pages</span>
+    <div style="flex:1;height:1px;background:var(--border)"></div>
+  </div>
+  <div class="tools-list stagger" style="margin-bottom:28px">
+
+    <a class="tool-row" href="tool.html?t=watermark">
+      <div class="tool-row-icon">💧</div>
+      <div class="tool-row-info">
+        <h3>Watermark PDF <span class="info-icon" onclick="event.preventDefault()" tabindex="0">i<span class="tooltip">Adds a diagonal text watermark across every page. Customise the text, font size, colour and opacity.</span></span></h3>
+        <p>Add diagonal text watermark on every page</p>
+      </div>
+      <span class="tool-row-arrow">→</span>
+    </a>
+
+    <a class="tool-row" href="tool.html?t=pagenumber">
+      <div class="tool-row-icon">🔢</div>
+      <div class="tool-row-info">
+        <h3>Add Page Numbers <span class="info-icon" onclick="event.preventDefault()" tabindex="0">i<span class="tooltip">Choose position (top/bottom, left/center/right), font size, starting number and optional prefix like "Page ".</span></span></h3>
+        <p>Customisable numbering, font & position</p>
+      </div>
+      <span class="tool-row-arrow">→</span>
+    </a>
+
+    <a class="tool-row" href="tool.html?t=header">
+      <div class="tool-row-icon">🔖</div>
+      <div class="tool-row-info">
+        <h3>Add Header / Footer <span class="info-icon" onclick="event.preventDefault()" tabindex="0">i<span class="tooltip">Add custom text, date or page numbers to headers and footers. Appears on every page.</span></span></h3>
+        <p>Custom text on every page top & bottom</p>
+      </div>
+      <span class="tool-row-arrow">→</span>
+    </a>
+
+    <a class="tool-row" href="tool.html?t=crop">
+      <div class="tool-row-icon">✂️</div>
+      <div class="tool-row-info">
+        <h3>Crop PDF <span class="info-icon" onclick="event.preventDefault()" tabindex="0">i<span class="tooltip">Enter margin values to crop from each edge (top, right, bottom, left). Applied to all pages uniformly.</span></span></h3>
+        <p>Trim page margins — set custom cropbox</p>
+      </div>
+      <span class="tool-row-arrow">→</span>
+    </a>
+
+  </div>
+
+  <!-- DOCUMENT sub-group -->
+  <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--txt3);margin:0 0 12px;display:flex;align-items:center;gap:10px">
+    <span>Document Settings</span>
+    <div style="flex:1;height:1px;background:var(--border)"></div>
+  </div>
+  <div class="tools-list stagger">
+
+    <a class="tool-row" href="tool.html?t=flatten">
+      <div class="tool-row-icon">📋</div>
+      <div class="tool-row-info">
+        <h3>Flatten PDF <span class="info-icon" onclick="event.preventDefault()" tabindex="0">i<span class="tooltip">Flattens all interactive form fields and annotations into static content. Prevents further editing of form fields.</span></span></h3>
+        <p>Flatten forms, fields & annotations</p>
+      </div>
+      <span class="tool-row-arrow">→</span>
+    </a>
+
+    <a class="tool-row" href="tool.html?t=metadata">
+      <div class="tool-row-icon">🏷️</div>
+      <div class="tool-row-info">
+        <h3>Edit Metadata <span class="info-icon" onclick="event.preventDefault()" tabindex="0">i<span class="tooltip">Edit the hidden document properties: title, author, subject, keywords and creation date.</span></span></h3>
+        <p>Change title, author, subject & keywords</p>
+      </div>
+      <span class="tool-row-arrow">→</span>
+    </a>
+
+  </div>
+
+  <div style="margin-top:44px;text-align:center;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+    <a href="organize.html" class="btn btn-outline">↕️ Organize Tools →</a>
+    <a href="convert.html" class="btn btn-outline">🔄 Convert Tools →</a>
+    <a href="index.html" class="btn btn-ghost">← All Tools</a>
+  </div>
+</div>
+
+<footer class="site-footer"><p class="made-by">Made with <span>❤️</span> by Abhishek</p></footer>
+</body>
+</html>

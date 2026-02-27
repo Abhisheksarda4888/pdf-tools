@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Organize PDFs — WeLovePDF</title>
+<meta name="description" content="Merge, split, reorder, rotate and resize PDF pages — 100% in your browser, no uploads.">
+<link rel="stylesheet" href="style.css">
+<script src="utils.js" defer></script>
+<style>
+.page-hero h1 span{color:var(--violet)}
+.tool-row:hover{border-color:rgba(167,139,250,.35);box-shadow:0 6px 28px rgba(0,0,0,.22)}
+.tool-row:hover::before{background:var(--violet)}
+.tool-row-icon{background:rgba(167,139,250,.09);border:1px solid rgba(167,139,250,.16)}
+.tool-row:hover .tool-row-arrow{color:var(--violet)}
+.page-badge{background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.22);color:var(--violet)}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a class="logo" href="index.html"><div class="logo-mark">W</div><span class="logo-name">We<span>Love</span>PDF</span></a>
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">All Tools</a>
+      <a class="nav-link active" href="organize.html">Organize</a>
+      <a class="nav-link" href="convert.html">Convert</a>
+      <a class="nav-link" href="edit.html">Edit</a>
+      <a class="nav-link nav-dash" href="dashboard.html">📊 Dashboard</a>
+    </div>
+    <button class="nav-ham" id="navHam"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a class="nav-link" href="index.html">🏠 All Tools</a>
+  <a class="nav-link active" href="organize.html">📑 Organize</a>
+  <a class="nav-link" href="convert.html">🔄 Convert</a>
+  <a class="nav-link" href="edit.html">✏️ Edit</a>
+  <a class="nav-link nav-dash" href="dashboard.html">📊 Dashboard</a>
+</div>
+
+<div class="page-wrap">
+  <a class="back-btn" href="index.html">← All Tools</a>
+
+  <div class="page-hero anim-up">
+    <div class="page-badge">↕️ &nbsp;Organize Tools</div>
+    <h1>Organize Your <span>PDF Pages</span></h1>
+    <p>Merge, split, remove, reorder, rotate and resize pages. Everything runs in your browser — files never leave your device.</p>
+  </div>
+
+  <div class="tools-list stagger">
+
+    <a class="tool-row" href="tool.html?t=merge">
+      <div class="tool-row-icon">🔗</div>
+      <div class="tool-row-info">
+        <h3>Merge PDF <span class="info-icon" onclick="event.preventDefault()" tabindex="0">i<span class="tooltip">Upload 2 or more PDFs and drag to reorder. Downloads as a single merged PDF.</span></span></h3>
+        <p>Combine multiple PDFs into one file</p>
+      </div>
+      <span class="tool-row-arrow">→</span>
+    </a>
+
+    <a class="tool-row" href="tool.html?t=split">
+      <div class="tool-row-icon">✂️</div>
+      <div class="tool-row-info">
+        <h3>Split PDF <span class="info-icon" onclick="event.preventDefault()" tabindex="0">i<span class="tooltip">Enter ranges like "1-3, 5, 7-9" to split into multiple PDFs. Each range becomes a separate file.</span></span></h3>
+        <p>Split into separate files or page ranges</p>
+      </div>
+      <span class="tool-row-arrow">→</span>
+    </a>
+
+    <a class="tool-row" href="tool.html?t=removepages">
+      <div class="tool-row-icon">🗑️</div>
+      <div class="tool-row-info">
+        <h3>Remove Pages <span class="info-icon" onclick="event.preventDefault()" tabindex="0">i<span class="tooltip">See visual thumbnails of all pages. Click any page to mark it for deletion, then apply.</span></span></h3>
+        <p>Click thumbnails to mark & delete pages</p>
+      </div>
+      <span class="tool-row-arrow">→</span>
+    </a>
+
+    <a class="tool-row" href="tool.html?t=reorder">
+      <div class="tool-row-icon">↕️</div>
+      <div class="tool-row-info">
+        <h3>Reorder Pages <span class="info-icon" onclick="event.preventDefault()" tabindex="0">i<span class="tooltip">Drag page thumbnails to any position. The order you see is what gets saved in the PDF.</span></span></h3>
+        <p>Drag thumbnails to rearrange order</p>
+      </div>
+      <span class="tool-row-arrow">→</span>
+    </a>
+
+    <a class="tool-row" href="tool.html?t=rotate">
+      <div class="tool-row-icon">🔄</div>
+      <div class="tool-row-info">
+        <h3>Rotate Pages <span class="info-icon" onclick="event.preventDefault()" tabindex="0">i<span class="tooltip">Select specific pages or all pages. Choose rotation: 90° right, 90° left, or 180°.</span></span></h3>
+        <p>Rotate pages 90°, 180° or 270°</p>
+      </div>
+      <span class="tool-row-arrow">→</span>
+    </a>
+
+    <a class="tool-row" href="tool.html?t=reverse">
+      <div class="tool-row-icon">🔁</div>
+      <div class="tool-row-info">
+        <h3>Reverse Pages <span class="info-icon" onclick="event.preventDefault()" tabindex="0">i<span class="tooltip">Instantly reverses the entire page order. The last page becomes the first, and so on.</span></span></h3>
+        <p>Flip the entire page order instantly</p>
+      </div>
+      <span class="tool-row-arrow">→</span>
+    </a>
+
+    <a class="tool-row" href="tool.html?t=extractpages">
+      <div class="tool-row-icon">📌</div>
+      <div class="tool-row-info">
+        <h3>Extract Pages <span class="info-icon" onclick="event.preventDefault()" tabindex="0">i<span class="tooltip">Select pages by clicking thumbnails or typing page numbers. Selected pages are saved as a new PDF.</span></span></h3>
+        <p>Pull specific pages into a new PDF</p>
+      </div>
+      <span class="tool-row-arrow">→</span>
+    </a>
+
+    <a class="tool-row" href="tool.html?t=resize">
+      <div class="tool-row-icon">📐</div>
+      <div class="tool-row-info">
+        <h3>Resize Pages <span class="info-icon" onclick="event.preventDefault()" tabindex="0">i<span class="tooltip">Change all pages to A4, A3, Letter, Legal or enter custom dimensions in mm or points.</span></span></h3>
+        <p>Change dimensions: A4 ↔ Letter ↔ custom</p>
+      </div>
+      <span class="tool-row-arrow">→</span>
+    </a>
+
+  </div>
+
+  <div style="margin-top:44px;text-align:center;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+    <a href="convert.html" class="btn btn-outline">🔄 Convert Tools →</a>
+    <a href="edit.html" class="btn btn-outline">✏️ Edit Tools →</a>
+    <a href="index.html" class="btn btn-ghost">← All Tools</a>
+  </div>
+</div>
+
+<footer class="site-footer"><p class="made-by">Made with <span>❤️</span> by Abhishek</p></footer>
+</body>
+</html>

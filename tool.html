@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WeLovePDF — Tool</title>
+<link rel="stylesheet" href="style.css">
+<style>
+/* ── TOOL PAGE LAYOUT ── */
+.tool-wrap{max-width:900px;margin:0 auto;padding:30px 20px 72px;position:relative;z-index:1}
+
+/* ── PDF VIEWER BOX ── */
+.pdf-viewer-box{
+  background:var(--ink);border:1px solid var(--border);
+  border-radius:var(--r2);overflow:hidden;margin-bottom:14px;
+  width:100%;box-sizing:border-box;
+}
+.pdf-viewer-toolbar{
+  display:flex;align-items:center;gap:6px;padding:8px 10px;
+  background:var(--ink2);border-bottom:1px solid var(--border);
+  flex-wrap:wrap;box-sizing:border-box;width:100%;
+}
+.pdf-viewer-toolbar .pg-counter{
+  font-size:0.82rem;color:var(--txt2);font-weight:600;
+  flex:1;text-align:center;min-width:50px;
+}
+/* Canvas area: full width, no horizontal overflow by default */
+.pdf-canvas-area{
+  width:100%;box-sizing:border-box;
+  overflow:auto;-webkit-overflow-scrolling:touch;
+  display:flex;align-items:flex-start;justify-content:center;
+  padding:10px;background:var(--ink);min-height:180px;
+}
+/* Canvas never wider than container in CSS — prevents stretching */
+.pdf-canvas-area canvas{
+  display:block;
+  max-width:100%;
+  height:auto;
+  border-radius:3px;
+  box-shadow:0 4px 24px rgba(0,0,0,.5);
+}
+@media(max-width:520px){
+  .pdf-viewer-toolbar{gap:3px;padding:5px 7px}
+  .pdf-viewer-toolbar .btn{padding:5px 7px;font-size:0.72rem}
+  .pdf-viewer-toolbar select.inp{font-size:0.72rem!important;padding:3px 5px!important;max-width:80px}
+  .pdf-viewer-toolbar .pg-counter{font-size:0.72rem}
+  .pdf-canvas-area{padding:6px}
+}
+
+/* ── THUMBNAIL STRIP ── */
+.thumb-strip{display:flex;gap:8px;overflow-x:auto;padding:8px 6px;scroll-snap-type:x mandatory}
+.thumb-strip::-webkit-scrollbar{height:3px}
+.thumb-item{
+  flex-shrink:0;scroll-snap-align:start;
+  background:var(--ink3);border:2px solid var(--border);
+  border-radius:8px;padding:4px;cursor:pointer;
+  transition:all 0.18s;text-align:center;
+}
+.thumb-item:hover{border-color:var(--border2)}
+.thumb-item.active{border-color:var(--gold)}
+.thumb-item canvas{width:56px;height:auto;display:block;border-radius:3px}
+.thumb-item .tn{font-size:0.6rem;color:var(--txt3);margin-top:3px;font-weight:600}
+
+/* ── OVERLAY STAGE (sign / addtext / redact) ── */
+.overlay-stage{
+  position:relative;display:block;line-height:0;
+  /* width is set by JS to match canvas CSS width */
+}
+.overlay-stage canvas{display:block;max-width:100%;height:auto}
+
+/* ── SIGN TOOL ── */
+.sig-pad-wrap{background:var(--ink3);border:1px solid var(--border2);border-radius:var(--r2);overflow:hidden;margin-bottom:12px;position:relative}
+.sig-pad-wrap canvas{display:block;cursor:crosshair;touch-action:none;width:100%;height:160px}
+.sig-pad-label{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:0.72rem;color:var(--txt3);pointer-events:none;white-space:nowrap}
+
+/* ── REDACT ── */
+.redact-count{display:inline-flex;align-items:center;gap:6px;background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.2);color:var(--rose);font-size:0.8rem;font-weight:600;padding:4px 12px;border-radius:20px}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:4px;background:var(--ink2);border:1px solid var(--border);border-radius:10px;padding:4px;margin-bottom:14px;flex-wrap:wrap}
+.tab-btn{flex:1;min-width:70px;padding:8px 10px;background:transparent;border:none;color:var(--txt2);font-family:'Barlow',sans-serif;font-size:0.82rem;font-weight:600;border-radius:7px;cursor:pointer;transition:all 0.18s}
+.tab-btn.active{background:var(--ink4);color:var(--txt);box-shadow:0 2px 8px rgba(0,0,0,0.3)}
+.tab-pane{display:none}.tab-pane.active{display:block}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a class="logo" href="index.html"><div class="logo-mark">W</div><span class="logo-name">We<span>Love</span>PDF</span></a>
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">All Tools</a>
+      <a class="nav-link" href="organize.html">Organize</a>
+      <a class="nav-link" href="convert.html">Convert</a>
+      <a class="nav-link" href="edit.html">Edit</a>
+      <a class="nav-link nav-dash" href="dashboard.html">📊 Dashboard</a>
+    </div>
+    <button class="nav-ham" id="navHam"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a class="nav-link" href="index.html">🏠 All Tools</a>
+  <a class="nav-link" href="organize.html">📑 Organize</a>
+  <a class="nav-link" href="convert.html">🔄 Convert</a>
+  <a class="nav-link" href="edit.html">✏️ Edit</a>
+  <a class="nav-link nav-dash" href="dashboard.html">📊 Dashboard</a>
+</div>
+
+<div class="tool-wrap" id="toolWrap">
+  <a class="back-btn" id="backBtn" href="index.html">← Back</a>
+  <div id="toolMount"></div>
+</div>
+
+<footer class="site-footer"><p class="made-by">Made with <span>❤️</span> by Abhishek</p></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="utils.js"></script>
+<script>
+// ── TOOL REGISTRY ─────────────────────────────────────────────────────────
+const TOOL_META = {
+  merge:        { icon:'🔗', name:'Merge PDF',           desc:'Combine multiple PDFs into one file',              cat:'organize', file:'tools/merge.js' },
+  split:        { icon:'✂️', name:'Split PDF',            desc:'Split into separate files or page ranges',         cat:'organize', file:'tools/split.js' },
+  removepages:  { icon:'🗑️', name:'Remove Pages',         desc:'Click thumbnails to mark & delete pages',          cat:'organize', file:'tools/removepages.js' },
+  reorder:      { icon:'↕️', name:'Reorder Pages',        desc:'Drag thumbnails to rearrange page order',          cat:'organize', file:'tools/reorder.js' },
+  rotate:       { icon:'🔄', name:'Rotate Pages',         desc:'Rotate pages 90°, 180° or 270°',                   cat:'organize', file:'tools/rotate.js' },
+  reverse:      { icon:'🔁', name:'Reverse Pages',        desc:'Flip the entire page order instantly',             cat:'organize', file:'tools/reverse.js' },
+  extractpages: { icon:'📌', name:'Extract Pages',        desc:'Pull specific pages into a new PDF',               cat:'organize', file:'tools/extractpages.js' },
+  resize:       { icon:'📐', name:'Resize Pages',         desc:'Change page dimensions to any standard size',      cat:'organize', file:'tools/resize.js' },
+  pagenumber:   { icon:'🔢', name:'Add Page Numbers',     desc:'Customisable numbering, font & position',          cat:'edit',     file:'tools/pagenumber.js' },
+  watermark:    { icon:'💧', name:'Watermark PDF',        desc:'Add diagonal text watermark on every page',        cat:'edit',     file:'tools/watermark.js' },
+  crop:         { icon:'✂️', name:'Crop PDF',             desc:'Trim page margins with custom cropbox',            cat:'edit',     file:'tools/crop.js' },
+  flatten:      { icon:'📋', name:'Flatten PDF',          desc:'Flatten forms, fields & annotations',              cat:'edit',     file:'tools/flatten.js' },
+  metadata:     { icon:'🏷️', name:'Edit Metadata',        desc:'Change title, author, subject & keywords',         cat:'edit',     file:'tools/metadata.js' },
+  addtext:      { icon:'📝', name:'Add Text',             desc:'Place freely movable text on any page',            cat:'edit',     file:'tools/addtext.js' },
+  sign:         { icon:'✍️', name:'Sign PDF',             desc:'Draw your signature & drag to exact position',     cat:'edit',     file:'tools/sign.js' },
+  redact:       { icon:'⬛', name:'Redact PDF',           desc:'Draw black boxes over sensitive content',          cat:'edit',     file:'tools/redact.js' },
+  header:       { icon:'🔖', name:'Add Header/Footer',    desc:'Custom text on every page top & bottom',           cat:'edit',     file:'tools/header.js' },
+  compress:     { icon:'🗜️', name:'Compress PDF',         desc:'Reduce file size by re-rendering pages',           cat:'convert',  file:'tools/compress.js' },
+  grayscale:    { icon:'🌑', name:'Grayscale PDF',        desc:'Convert colour PDF to black & white',              cat:'convert',  file:'tools/grayscale.js' },
+  darkpdf:      { icon:'🌙', name:'Dark / Invert PDF',    desc:'Invert colours for comfortable night reading',     cat:'convert',  file:'tools/darkpdf.js' },
+  pdf2img:      { icon:'🖼️', name:'PDF → Images',         desc:'Export every page as JPG or PNG',                  cat:'convert',  file:'tools/pdf2img.js' },
+  img2pdf:      { icon:'📷', name:'Images → PDF',         desc:'Combine multiple images into one PDF',             cat:'convert',  file:'tools/img2pdf.js' },
+  pdf2text:     { icon:'📄', name:'PDF → Text',           desc:'Extract all readable text content',                cat:'convert',  file:'tools/pdf2text.js' },
+  extractimages:{ icon:'🎨', name:'Extract Images',       desc:'Save every page as a JPG image file',              cat:'convert',  file:'tools/extractimages.js' },
+  html2pdf:     { icon:'🌐', name:'HTML → PDF',           desc:'Convert HTML to PDF via browser print',            cat:'convert',  file:'tools/html2pdf.js' },
+  inspector:    { icon:'🔍', name:'PDF Inspector',        desc:'Page count, file size, fonts & metadata',          cat:'analyze',  file:'tools/inspector.js' },
+  wordcount:    { icon:'🔢', name:'Word & Page Count',    desc:'Total words, characters & reading time',           cat:'analyze',  file:'tools/wordcount.js' },
+  compare:      { icon:'⚖️', name:'Compare PDFs',         desc:'Find text similarities & differences',             cat:'analyze',  file:'tools/compare.js' },
+  viewer:       { icon:'👁️', name:'PDF Viewer',           desc:'Full-featured in-browser PDF viewer',              cat:'utility',  file:'tools/viewer.js' },
+  repair:       { icon:'🔧', name:'Repair PDF',           desc:'Fix minor corruption by re-saving cleanly',        cat:'utility',  file:'tools/repair.js' },
+  extracttext:  { icon:'📤', name:'Extract Text (Pages)', desc:'Extract text from specific page range',            cat:'utility',  file:'tools/extracttext.js' },
+  blank:        { icon:'➕', name:'Create Blank PDF',     desc:'New PDF with custom size & background colour',     cat:'create',   file:'tools/blank.js' },
+  coverpage:    { icon:'🎨', name:'Add Cover Page',       desc:'Insert a styled cover with title & author',        cat:'create',   file:'tools/coverpage.js' },
+};
+
+const CAT_BACK = {
+  organize:'organize.html', edit:'edit.html',
+  convert:'convert.html',   analyze:'index.html',
+  utility:'index.html',     create:'index.html'
+};
+
+(async function boot() {
+  if (typeof pdfjsLib !== 'undefined') {
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+  const params = new URLSearchParams(window.location.search);
+  const toolId = params.get('t') || '';
+  const meta   = TOOL_META[toolId];
+
+  if (!meta) {
+    document.getElementById('toolMount').innerHTML = `
+      <div style="text-align:center;padding:80px 20px;color:var(--txt3)">
+        <div style="font-size:3rem;margin-bottom:16px">🔍</div>
+        <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:1.6rem;margin-bottom:8px">Tool not found</h2>
+        <p style="margin-bottom:24px">The tool "<strong>${toolId}</strong>" doesn't exist yet.</p>
+        <a href="index.html" class="btn btn-gold">← Back to All Tools</a>
+      </div>`;
+    return;
+  }
+
+  document.title = `${meta.name} — WeLovePDF`;
+  const backBtn  = document.getElementById('backBtn');
+  if (backBtn) backBtn.href = CAT_BACK[meta.cat] || 'index.html';
+
+  document.getElementById('toolMount').innerHTML = `
+    <div class="tool-hdr anim-up">
+      <div class="tool-hdr-icon">${meta.icon}</div>
+      <div class="tool-hdr-text">
+        <h2>${meta.name}</h2>
+        <p>${meta.desc} &nbsp;·&nbsp; <span style="color:var(--teal);font-size:0.8rem">🔒 Files never leave your device</span></p>
+      </div>
+    </div>
+    <div id="toolBody" class="anim-up" style="animation-delay:0.07s"></div>`;
+
+  try {
+    await loadScript(meta.file);
+    if (typeof window.initTool === 'function') window.initTool(toolId, meta);
+    else document.getElementById('toolBody').innerHTML = comingSoon(meta);
+  } catch(e) {
+    document.getElementById('toolBody').innerHTML = comingSoon(meta);
+  }
+})();
+
+function loadScript(src) {
+  return new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = src + '?v=2'; s.onload = res; s.onerror = rej;
+    document.head.appendChild(s);
+  });
+}
+
+function comingSoon(meta) {
+  return `<div style="text-align:center;padding:60px 20px;background:var(--ink2);border:1px solid var(--border);border-radius:var(--r2)">
+    <div style="font-size:3rem;margin-bottom:14px">${meta.icon}</div>
+    <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:700;margin-bottom:8px">${meta.name}</h3>
+    <p style="color:var(--txt2);font-size:0.9rem;margin-bottom:24px;max-width:360px;margin-left:auto;margin-right:auto;line-height:1.6">This tool is being upgraded. Check back shortly!</p>
+    <a href="index.html" class="btn btn-outline">← All Tools</a>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  WLP — Shared PDF viewer used by all tool scripts
+// ═══════════════════════════════════════════════════════════════
+window.WLP = {
+
+  // ─── renderPage ────────────────────────────────────────────
+  //
+  //  pdfDoc   : pdf.js document
+  //  pageNum  : 1-based page number
+  //  canvas   : <canvas> element to render into
+  //  scale    : number (e.g. 0.4 for thumb) | 'auto' | undefined
+  //
+  //  Strategy:
+  //   1. Compute desired *logical* CSS width (auto = fit container).
+  //   2. Multiply by devicePixelRatio for crisp physical rendering.
+  //   3. Set canvas.width/height to physical pixels.
+  //   4. Set canvas.style.width/height to logical pixels.
+  //   5. CSS `max-width:100%; height:auto` on the canvas then
+  //      clamps it inside any narrower container automatically.
+  //
+  async renderPage(pdfDoc, pageNum, canvas, scale) {
+    const page  = await pdfDoc.getPage(pageNum);
+    const nat   = page.getViewport({ scale: 1 });   // natural 1:1 size in pt
+    const dpr   = window.devicePixelRatio || 1;
+
+    let logicalW;
+    if (!scale || scale === 'auto') {
+      // Walk up to find .pdf-canvas-area for accurate available width
+      let area = canvas.parentElement;
+      while (area && !area.classList.contains('pdf-canvas-area')) area = area.parentElement;
+      if (!area) area = canvas.parentElement;
+      const pad   = 20;
+      logicalW    = area ? Math.max(area.clientWidth - pad, 100) : 360;
+    } else {
+      logicalW = nat.width * parseFloat(scale);
+    }
+
+    // Physical pixel scale
+    const physScale = (logicalW / nat.width) * dpr;
+    const vp        = page.getViewport({ scale: physScale });
+
+    canvas.width         = Math.round(vp.width);
+    canvas.height        = Math.round(vp.height);
+    canvas.style.width   = Math.round(logicalW) + 'px';
+    canvas.style.height  = Math.round(nat.height * (logicalW / nat.width)) + 'px';
+
+    await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+    return page;
+  },
+
+  // ─── buildViewer ───────────────────────────────────────────
+  buildViewer(containerId, pdfDoc, opts) {
+    opts = opts || {};
+    const wrap = document.getElementById(containerId);
+    if (!wrap) return;
+    const total = pdfDoc.numPages;
+
+    wrap.innerHTML = `
+      <div class="pdf-viewer-box">
+        <div class="pdf-viewer-toolbar">
+          <button class="btn btn-ghost btn-sm" onclick="WLP._vNav(-1)">‹ Prev</button>
+          <span class="pg-counter"><span id="vCur">1</span> / ${total}</span>
+          <button class="btn btn-ghost btn-sm" onclick="WLP._vNav(1)">Next ›</button>
+          <select class="inp" id="vScaleSel" style="width:auto;font-size:0.78rem;padding:5px 8px"
+                  onchange="WLP._vZoom(this.value)">
+            <option value="auto" selected>Auto fit</option>
+            <option value="0.5">50%</option>
+            <option value="0.75">75%</option>
+            <option value="1">100%</option>
+            <option value="1.5">150%</option>
+            <option value="2">200%</option>
+          </select>
+        </div>
+        <div class="thumb-strip" id="vThumbs"></div>
+        <div class="pdf-canvas-area" id="vCanvasArea">
+          <div class="overlay-stage" id="vStage">
+            <canvas id="vCanvas"></canvas>
+          </div>
+        </div>
+      </div>`;
+
+    this._vPdf   = pdfDoc;
+    this._vCur   = 1;
+    this._vTotal = total;
+    this._vScale = 'auto';
+    this._vOpts  = opts;
+
+    // Defer first render so DOM is painted and clientWidth is real
+    requestAnimationFrame(() => {
+      this._vRender(1);
+      this._vBuildThumbs();
+    });
+
+    // Re-render on resize (e.g. rotate phone)
+    if (this._resizeOb) this._resizeOb.disconnect();
+    if (window.ResizeObserver) {
+      this._resizeOb = new ResizeObserver(() => {
+        if (this._vScale === 'auto') {
+          clearTimeout(this._resizeT);
+          this._resizeT = setTimeout(() => this._vRender(this._vCur), 150);
+        }
+      });
+      const area = wrap.querySelector('.pdf-canvas-area');
+      if (area) this._resizeOb.observe(area);
+    }
+
+    if (opts.overlayMode) setTimeout(() => OVERLAY.init('vStage'), 60);
+    if (opts.redactMode)  setTimeout(() => REDACT.init('vCanvas', 1), 400);
+  },
+
+  async _vRender(n) {
+    this._vCur   = n;
+    const canvas = document.getElementById('vCanvas');
+    if (!canvas) return;
+
+    await this.renderPage(this._vPdf, n, canvas, this._vScale);
+
+    // Keep overlay-stage exactly the same size as the canvas CSS box
+    const stage = document.getElementById('vStage');
+    if (stage) {
+      stage.style.width  = canvas.style.width;
+      stage.style.height = canvas.style.height;
+    }
+
+    const el = document.getElementById('vCur');
+    if (el) el.textContent = n;
+    document.querySelectorAll('.thumb-item').forEach((t, i) =>
+      t.classList.toggle('active', i + 1 === n));
+
+    if (this._vOpts.redactMode) REDACT.init('vCanvas', n);
+    if (typeof this._vOpts.onPageRender === 'function')
+      this._vOpts.onPageRender(n, canvas);
+  },
+
+  _vNav(dir) {
+    const n = Math.max(1, Math.min(this._vTotal, this._vCur + dir));
+    this._vRender(n);
+  },
+
+  _vZoom(val) {
+    this._vScale = val === 'auto' ? 'auto' : parseFloat(val);
+    this._vRender(this._vCur);
+  },
+
+  async _vBuildThumbs() {
+    const strip    = document.getElementById('vThumbs');
+    if (!strip) return;
+    const dpr      = window.devicePixelRatio || 1;
+    const THUMB_W  = 56; // logical CSS px
+
+    for (let i = 1; i <= this._vTotal; i++) {
+      const item    = document.createElement('div');
+      item.className   = 'thumb-item' + (i === 1 ? ' active' : '');
+      item.dataset.page = i;
+      item.onclick      = () => this._vRender(i);
+
+      const tc   = document.createElement('canvas');
+      const page = await this._vPdf.getPage(i);
+      const nat  = page.getViewport({ scale: 1 });
+      const ts   = (THUMB_W * dpr) / nat.width;
+      const tvp  = page.getViewport({ scale: ts });
+      tc.width        = Math.round(tvp.width);
+      tc.height       = Math.round(tvp.height);
+      tc.style.width  = THUMB_W + 'px';
+      tc.style.height = Math.round(nat.height * (THUMB_W / nat.width)) + 'px';
+      await page.render({ canvasContext: tc.getContext('2d'), viewport: tvp }).promise;
+
+      const tn = document.createElement('div');
+      tn.className = 'tn'; tn.textContent = i;
+      item.appendChild(tc); item.appendChild(tn);
+      strip.appendChild(item);
+    }
+  },
+
+  getCurrentPage() { return this._vCur; },
+  getTotalPages()  { return this._vTotal; },
+  getCanvas()      { return document.getElementById('vCanvas'); },
+};
+</script>
+</body>
+</html>

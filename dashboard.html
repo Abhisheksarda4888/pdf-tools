@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard — WeLovePDF</title>
+<link rel="stylesheet" href="style.css">
+<script src="utils.js" defer></script>
+<style>
+.dash-wrap{max-width:1100px;margin:0 auto;padding:36px 20px 72px;position:relative;z-index:1}
+.dash-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:32px;flex-wrap:wrap;gap:12px}
+.dash-head h1{font-family:'Barlow Condensed',sans-serif;font-size:2.4rem;font-weight:800;letter-spacing:0.01em}
+.dash-head p{color:var(--txt2);font-size:0.88rem;margin-top:3px}
+
+/* STATS GRID */
+.dash-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px;margin-bottom:32px}
+.dash-stat{background:var(--ink2);border:1px solid var(--border);border-radius:var(--r2);padding:20px 22px;position:relative;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s}
+.dash-stat:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.3)}
+.dash-stat::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
+.dash-stat:nth-child(1)::after{background:linear-gradient(90deg,var(--gold),var(--gold3))}
+.dash-stat:nth-child(2)::after{background:linear-gradient(90deg,var(--teal),#0d9488)}
+.dash-stat:nth-child(3)::after{background:linear-gradient(90deg,var(--violet),#7c3aed)}
+.dash-stat:nth-child(4)::after{background:linear-gradient(90deg,var(--rose),#dc2626)}
+.stat-icon{font-size:1.3rem;margin-bottom:8px;opacity:0.7}
+.dash-stat-num{font-family:'Barlow Condensed',sans-serif;font-size:2.3rem;font-weight:800;color:var(--gold);line-height:1;margin-bottom:4px}
+.dash-stat:nth-child(2) .dash-stat-num{color:var(--teal)}
+.dash-stat:nth-child(3) .dash-stat-num{color:var(--violet)}
+.dash-stat:nth-child(4) .dash-stat-num{color:var(--rose)}
+.dash-stat-lbl{font-size:0.71rem;color:var(--txt3);text-transform:uppercase;letter-spacing:0.1em;font-weight:600}
+
+/* RECENT TOOLS */
+.section-title{font-family:'Barlow Condensed',sans-serif;font-size:1.15rem;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.section-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+.recent-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-bottom:32px}
+.recent-card{background:var(--ink2);border:1px solid var(--border);border-radius:var(--r2);padding:14px 12px;text-align:center;text-decoration:none;display:block;transition:all 0.2s;position:relative;overflow:hidden}
+.recent-card::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--teal));opacity:0;transition:opacity 0.2s}
+.recent-card:hover{border-color:rgba(240,180,41,0.3);transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,0.3)}
+.recent-card:hover::before{opacity:1}
+.recent-card .ri{font-size:1.6rem;margin-bottom:6px;transition:transform 0.2s}
+.recent-card:hover .ri{transform:scale(1.15)}
+.recent-card .rn{font-size:0.77rem;font-weight:600;color:var(--txt);line-height:1.3}
+.recent-card .rc{font-size:0.67rem;color:var(--txt3);margin-top:3px}
+
+/* HISTORY TABLE */
+.history-wrap{background:var(--ink2);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden}
+.history-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px}
+.history-head h3{font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700}
+.history-table{width:100%;border-collapse:collapse}
+.history-table th{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--txt3);padding:11px 16px;text-align:left;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.2)}
+.history-table td{padding:12px 16px;font-size:0.87rem;border-bottom:1px solid var(--border);vertical-align:middle}
+.history-table tr:last-child td{border-bottom:none}
+.history-table tr:hover td{background:rgba(255,255,255,0.02)}
+.hist-badge{display:inline-flex;align-items:center;gap:6px;background:var(--ink3);border:1px solid var(--border);border-radius:7px;padding:4px 10px;font-size:0.82rem;font-weight:600}
+.hist-file{font-size:0.79rem;color:var(--txt2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+.hist-time{font-size:0.75rem;color:var(--txt3);white-space:nowrap}
+.hist-size{font-size:0.8rem;color:var(--txt3)}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:72px 24px;color:var(--txt3)}
+.empty-state .es-icon{font-size:3.4rem;margin-bottom:16px;animation:resBounce 0.5s ease both}
+.empty-state h3{font-family:'Barlow Condensed',sans-serif;font-size:1.3rem;font-weight:700;color:var(--txt2);margin-bottom:8px}
+.empty-state p{font-size:0.9rem;margin-bottom:24px;line-height:1.6;max-width:340px;margin-left:auto;margin-right:auto}
+
+/* MINI BAR CHART for tool usage */
+.usage-chart{display:flex;flex-direction:column;gap:8px;margin-bottom:32px}
+.usage-row{display:flex;align-items:center;gap:12px}
+.usage-label{font-size:0.8rem;color:var(--txt2);width:140px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px}
+.usage-bar-wrap{flex:1;height:8px;background:var(--ink4);border-radius:20px;overflow:hidden}
+.usage-bar{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--gold),var(--teal));transition:width 1s cubic-bezier(0.4,0,0.2,1)}
+.usage-count{font-size:0.75rem;color:var(--txt3);width:28px;text-align:right;flex-shrink:0;font-family:'Barlow Condensed',sans-serif;font-weight:700}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  .history-table .hide-mobile{display:none}
+  .dash-stats{grid-template-columns:repeat(2,1fr)}
+  .recent-grid{grid-template-columns:repeat(3,1fr)}
+  .hist-file{max-width:120px}
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a class="logo" href="index.html"><div class="logo-mark">W</div><span class="logo-name">We<span>Love</span>PDF</span></a>
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">All Tools</a>
+      <a class="nav-link" href="organize.html">Organize</a>
+      <a class="nav-link" href="convert.html">Convert</a>
+      <a class="nav-link" href="edit.html">Edit</a>
+      <a class="nav-link active nav-dash" href="dashboard.html">📊 Dashboard</a>
+    </div>
+    <button class="nav-ham" id="navHam"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a class="nav-link" href="index.html">🏠 All Tools</a>
+  <a class="nav-link" href="organize.html">📑 Organize</a>
+  <a class="nav-link" href="convert.html">🔄 Convert</a>
+  <a class="nav-link" href="edit.html">✏️ Edit</a>
+  <a class="nav-link active nav-dash" href="dashboard.html">📊 Dashboard</a>
+</div>
+
+<div class="dash-wrap">
+  <div class="dash-head anim-up">
+    <div>
+      <h1>📊 My Dashboard</h1>
+      <p>Your local PDF processing history — stored only on this device.</p>
+    </div>
+    <div class="btn-row" style="margin:0">
+      <a href="index.html" class="btn btn-ghost btn-sm">← All Tools</a>
+      <button class="btn btn-danger btn-sm" onclick="confirmClear()">🗑 Clear History</button>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="dash-stats stagger" id="dashStats"></div>
+
+  <!-- RECENT TOOLS -->
+  <div id="recentToolsWrap" style="display:none">
+    <div class="section-title">Recently Used Tools</div>
+    <div class="recent-grid stagger" id="recentGrid"></div>
+  </div>
+
+  <!-- USAGE CHART -->
+  <div id="usageChartWrap" style="display:none">
+    <div class="section-title">Most Used Tools</div>
+    <div class="usage-chart" id="usageChart"></div>
+  </div>
+
+  <!-- HISTORY TABLE -->
+  <div class="history-wrap" id="historyWrap">
+    <div class="history-head">
+      <h3>Activity History</h3>
+      <span id="histCount" style="font-size:0.8rem;color:var(--txt3)"></span>
+    </div>
+    <div id="historyBody"></div>
+  </div>
+</div>
+
+<footer class="site-footer"><p class="made-by">Made with <span>❤️</span> by Abhishek</p></footer>
+
+<script>
+function getHistory(){
+  try{ return JSON.parse(localStorage.getItem('wlp_history')||'[]'); }catch(e){return [];}
+}
+
+function fmtSzD(b){
+  return !b||b===0?'—':b<1024?b+'B':b<1048576?(b/1024).toFixed(1)+'KB':(b/1048576).toFixed(2)+'MB';
+}
+
+function fmtDate(ts){
+  const d=new Date(ts);
+  const now=new Date();
+  const diff=now-d;
+  if(diff<60000) return 'Just now';
+  if(diff<3600000) return Math.floor(diff/60000)+'m ago';
+  if(diff<86400000) return Math.floor(diff/3600000)+'h ago';
+  if(diff<604800000) return Math.floor(diff/86400000)+'d ago';
+  return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'2-digit'})+
+    ' '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+}
+
+function toolUrl(name){
+  const map={
+    'Merge PDF':'merge','Split PDF':'split','Remove Pages':'removepages','Reorder Pages':'reorder',
+    'Rotate Pages':'rotate','Reverse Pages':'reverse','Extract Pages':'extractpages','Resize Pages':'resize',
+    'Add Page Numbers':'pagenumber','Watermark PDF':'watermark','Crop PDF':'crop','Flatten PDF':'flatten',
+    'Edit Metadata':'metadata','Add Text':'addtext','Sign PDF':'sign','Redact PDF':'redact',
+    'Add Header/Footer':'header','Compress PDF':'compress','Grayscale PDF':'grayscale',
+    'Dark / Invert PDF':'darkpdf','PDF → Images':'pdf2img','Images → PDF':'img2pdf',
+    'PDF → Text':'pdf2text','Extract Images':'extractimages','HTML → PDF':'html2pdf',
+    'PDF Inspector':'inspector','Word & Page Count':'wordcount','Compare PDFs':'compare',
+    'PDF Viewer':'viewer','Repair PDF':'repair','Extract Text (Pages)':'extracttext',
+    'Create Blank PDF':'blank','Add Cover Page':'coverpage'
+  };
+  return 'tool.html?t='+(map[name]||name.toLowerCase().replace(/\s+/g,''));
+}
+
+function render(){
+  const history = getHistory();
+
+  // ── STATS ──
+  const totalOps   = history.length;
+  const totalFiles = history.reduce((a,e)=>a+(e.files||[]).length, 0);
+  const toolSet    = new Set(history.map(e=>e.tool));
+  const totalSize  = history.reduce((a,e)=>a+(e.resultSize||0), 0);
+
+  document.getElementById('dashStats').innerHTML = `
+    <div class="dash-stat anim-up"><div class="stat-icon">⚡</div><div class="dash-stat-num">${totalOps}</div><div class="dash-stat-lbl">Operations</div></div>
+    <div class="dash-stat anim-up"><div class="stat-icon">📄</div><div class="dash-stat-num">${totalFiles}</div><div class="dash-stat-lbl">Files Processed</div></div>
+    <div class="dash-stat anim-up"><div class="stat-icon">🛠️</div><div class="dash-stat-num">${toolSet.size}</div><div class="dash-stat-lbl">Tools Used</div></div>
+    <div class="dash-stat anim-up"><div class="stat-icon">💾</div><div class="dash-stat-num">${totalSize>0?fmtSzD(totalSize):'—'}</div><div class="dash-stat-lbl">Output Generated</div></div>
+  `;
+
+  if(!history.length){
+    document.getElementById('historyBody').innerHTML = `
+      <div class="empty-state">
+        <div class="es-icon">📭</div>
+        <h3>No activity yet</h3>
+        <p>Use any tool and your activity will appear here. All data stays on your device.</p>
+        <a href="index.html" class="btn btn-gold">Browse Tools →</a>
+      </div>`;
+    return;
+  }
+
+  // ── RECENT TOOLS ──
+  document.getElementById('recentToolsWrap').style.display = '';
+  const seen=new Set(), recent=[];
+  for(const e of history){
+    if(!seen.has(e.tool)){ seen.add(e.tool); recent.push(e); }
+    if(recent.length>=6) break;
+  }
+  document.getElementById('recentGrid').innerHTML = recent.map(e=>`
+    <a class="recent-card" href="${toolUrl(e.tool)}">
+      <div class="ri">${e.icon}</div>
+      <div class="rn">${e.tool}</div>
+      <div class="rc">Open again</div>
+    </a>`).join('');
+
+  // ── USAGE CHART ──
+  document.getElementById('usageChartWrap').style.display = '';
+  const counts={};
+  history.forEach(e=>{ counts[e.tool]=(counts[e.tool]||{count:0,icon:e.icon}); counts[e.tool].count++; });
+  const sorted = Object.entries(counts).sort((a,b)=>b[1].count-a[1].count).slice(0,6);
+  const maxCount = sorted[0]?.[1].count || 1;
+  document.getElementById('usageChart').innerHTML = sorted.map(([tool,{count,icon}])=>`
+    <div class="usage-row">
+      <div class="usage-label"><span>${icon}</span>${tool}</div>
+      <div class="usage-bar-wrap"><div class="usage-bar" style="width:${Math.round(count/maxCount*100)}%"></div></div>
+      <div class="usage-count">${count}</div>
+    </div>`).join('');
+
+  // ── HISTORY TABLE ──
+  document.getElementById('histCount').textContent = totalOps+' entr'+(totalOps===1?'y':'ies');
+  document.getElementById('historyBody').innerHTML = `
+    <table class="history-table">
+      <thead><tr>
+        <th>Tool</th>
+        <th>Files</th>
+        <th class="hide-mobile">Output</th>
+        <th>When</th>
+      </tr></thead>
+      <tbody>${history.map(e=>`<tr>
+        <td><span class="hist-badge">${e.icon} ${e.tool}</span></td>
+        <td>
+          ${(e.files||[]).slice(0,2).map(f=>`<div class="hist-file" title="${f.name}">📄 ${f.name} <span style="color:var(--txt3)">(${fmtSzD(f.size)})</span></div>`).join('')}
+          ${(e.files||[]).length>2?`<div style="font-size:0.74rem;color:var(--txt3);margin-top:2px">+${e.files.length-2} more</div>`:''}
+        </td>
+        <td class="hist-size hide-mobile">${fmtSzD(e.resultSize)}</td>
+        <td class="hist-time">${fmtDate(e.ts)}</td>
+      </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+function confirmClear(){
+  if(confirm('Clear all history? This cannot be undone.')){
+    localStorage.removeItem('wlp_history');
+    render();
+  }
+}
+
+render();
+
+// Animate usage bars on load
+setTimeout(()=>{
+  document.querySelectorAll('.usage-bar').forEach(b=>{
+    const w = b.style.width;
+    b.style.width = '0';
+    requestAnimationFrame(()=>{ setTimeout(()=>{ b.style.width=w; }, 50); });
+  });
+}, 100);
+</script>
+</body>
+</html>

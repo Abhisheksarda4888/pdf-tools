@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WeLovePDF — Free PDF Tools, 100% Private</title>
+<meta name="description" content="35+ free PDF tools. Merge, split, compress, sign, redact, convert and more — entirely in your browser. No uploads. No servers.">
+<link rel="stylesheet" href="style.css">
+<style>
+/* ── HERO ── */
+.hero{max-width:1200px;margin:0 auto;padding:72px 20px 52px;text-align:center;position:relative;z-index:1}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(240,180,41,0.08);border:1px solid rgba(240,180,41,0.22);color:var(--gold);font-size:0.74rem;font-weight:700;padding:6px 18px;border-radius:50px;margin-bottom:26px;letter-spacing:0.07em;text-transform:uppercase;animation:fadeUp 0.4s ease both}
+.hero-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite;flex-shrink:0}
+.hero h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(2.8rem,7.5vw,5.6rem);font-weight:900;line-height:1.0;letter-spacing:0.01em;margin-bottom:20px;animation:fadeUp 0.4s 0.07s ease both}
+.hero h1 em{font-style:normal;color:var(--gold);position:relative}
+.hero h1 em::after{content:'';position:absolute;left:0;right:0;bottom:-2px;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold3));border-radius:2px;opacity:0.5}
+.hero-sub{color:var(--txt2);font-size:1.05rem;max-width:520px;margin:0 auto 36px;line-height:1.7;animation:fadeUp 0.4s 0.12s ease both}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:52px;animation:fadeUp 0.4s 0.17s ease both}
+.stats{display:flex;justify-content:center;gap:44px;flex-wrap:wrap;animation:fadeUp 0.4s 0.22s ease both}
+.stat-item{text-align:center}
+.stat-num{font-family:'Barlow Condensed',sans-serif;font-size:2.2rem;font-weight:800;color:var(--gold);line-height:1}
+.stat-lbl{font-size:0.7rem;color:var(--txt3);text-transform:uppercase;letter-spacing:0.12em;margin-top:4px;font-weight:600}
+
+/* ── PRIVACY STRIP ── */
+.privacy-strip{max-width:1200px;margin:0 auto 0;padding:0 20px 10px;position:relative;z-index:1;animation:fadeUp 0.4s 0.25s ease both}
+.privacy-inner{display:flex;align-items:center;justify-content:center;gap:24px;background:rgba(34,211,184,0.04);border:1px solid rgba(34,211,184,0.1);border-radius:var(--r2);padding:13px 24px;flex-wrap:wrap}
+.priv-item{display:flex;align-items:center;gap:8px;font-size:0.8rem;color:var(--txt2);font-weight:500}
+.priv-dot{width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 8px var(--glow-teal);flex-shrink:0}
+
+/* ── SEARCH ── */
+.search-sec{max-width:1200px;margin:0 auto;padding:28px 20px 6px;position:relative;z-index:1}
+.search-wrap{position:relative;max-width:520px;margin:0 auto}
+.search-wrap input{width:100%;padding:13px 46px 13px 46px;background:var(--ink2);border:1px solid var(--border2);border-radius:50px;color:var(--txt);font-size:0.92rem;outline:none;transition:all 0.22s;font-family:'Barlow',sans-serif}
+.search-wrap input:focus{border-color:rgba(240,180,41,0.5);box-shadow:0 0 0 4px rgba(240,180,41,0.08),0 4px 20px rgba(0,0,0,0.3)}
+.search-wrap input::placeholder{color:var(--txt3)}
+.s-icon{position:absolute;left:17px;top:50%;transform:translateY(-50%);color:var(--txt3);font-size:1rem;pointer-events:none}
+.s-clear{position:absolute;right:16px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.07);border:1px solid var(--border);color:var(--txt3);cursor:pointer;font-size:0.8rem;padding:3px 8px;border-radius:20px;display:none;transition:all 0.18s;font-family:'Barlow',sans-serif}
+.s-clear:hover{background:rgba(248,113,113,0.12);color:var(--rose);border-color:rgba(248,113,113,0.2)}
+
+/* ── TOOLS SECTION ── */
+.tools-sec{max-width:1200px;margin:0 auto;padding:10px 20px 56px;position:relative;z-index:1}
+.tool-count-bar{display:flex;align-items:center;justify-content:space-between;margin:16px 0 6px;flex-wrap:wrap;gap:8px}
+.tool-count-text{font-size:0.8rem;color:var(--txt3);font-weight:500}
+.tool-count-num{font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:800;color:var(--gold)}
+.cat-header{display:flex;align-items:center;gap:10px;margin:34px 0 14px}
+.cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.cat-name{font-family:'Barlow Condensed',sans-serif;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:var(--txt2)}
+.cat-count{font-size:0.68rem;color:var(--txt3);font-weight:600;background:var(--ink3);border:1px solid var(--border);padding:2px 8px;border-radius:20px}
+.cat-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(164px,1fr));gap:11px}
+.tool-card{background:var(--ink2);border:1px solid var(--border);border-radius:var(--r2);padding:20px 15px;cursor:pointer;transition:all 0.22s;text-align:center;position:relative;overflow:hidden;text-decoration:none;display:block}
+.tool-card::before{content:'';position:absolute;bottom:0;left:0;right:0;height:0;background:linear-gradient(0deg,rgba(240,180,41,0.06),transparent);transition:height 0.22s}
+.tool-card:hover::before{height:100%}
+.tool-card:hover{border-color:rgba(240,180,41,0.3);transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.32)}
+.tool-card:active{transform:translateY(-1px)}
+.tc-badge{position:absolute;top:9px;right:9px;font-size:0.57rem;font-weight:700;padding:2px 7px;border-radius:20px;letter-spacing:0.04em;text-transform:uppercase}
+.badge-hot{background:rgba(248,113,113,0.1);color:var(--rose);border:1px solid rgba(248,113,113,0.18)}
+.badge-new{background:rgba(34,211,184,0.1);color:var(--teal);border:1px solid rgba(34,211,184,0.18)}
+.badge-pop{background:rgba(240,180,41,0.1);color:var(--gold);border:1px solid rgba(240,180,41,0.18)}
+.tc-icon{font-size:2.1rem;margin-bottom:10px;display:block;transition:transform 0.22s}
+.tool-card:hover .tc-icon{transform:scale(1.12) translateY(-2px)}
+.tc-name{font-family:'Barlow Condensed',sans-serif;font-size:0.95rem;font-weight:700;color:var(--txt);margin-bottom:4px;letter-spacing:0.01em}
+.tc-desc{font-size:0.71rem;color:var(--txt2);line-height:1.42}
+.tc-info{position:absolute;top:9px;left:9px}
+.no-results{text-align:center;padding:70px 20px;color:var(--txt3)}
+.no-results .nr-icon{font-size:3rem;margin-bottom:14px}
+
+/* category dot colors */
+.dot-organize{background:#a78bfa}.dot-edit{background:var(--teal)}.dot-convert{background:var(--rose)}
+.dot-analyze{background:var(--pink)}.dot-utility{background:var(--green)}.dot-create{background:var(--blue)}
+
+/* ── HOW IT WORKS ── */
+.how-sec{max-width:1200px;margin:0 auto;padding:0 20px 64px;position:relative;z-index:1}
+.sec-title{font-family:'Barlow Condensed',sans-serif;font-size:2.2rem;font-weight:800;text-align:center;margin-bottom:8px;letter-spacing:0.01em}
+.sec-sub{color:var(--txt2);text-align:center;font-size:0.93rem;margin-bottom:36px;line-height:1.6}
+.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.step-card{background:var(--ink2);border:1px solid var(--border);border-radius:var(--r2);padding:28px 22px;text-align:center;transition:transform 0.2s,box-shadow 0.2s;position:relative;overflow:hidden}
+.step-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,0.3)}
+.step-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--teal));opacity:0;transition:opacity 0.2s}
+.step-card:hover::before{opacity:1}
+.step-num{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold3));color:#000;font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 4px 14px var(--glow-gold)}
+.step-card h3{font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:7px}
+.step-card p{font-size:0.84rem;color:var(--txt2);line-height:1.55}
+
+/* ── USP SECTION ── */
+.usp-sec{max-width:1200px;margin:0 auto;padding:0 20px 64px;position:relative;z-index:1}
+.usp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.usp-card{background:var(--ink2);border:1px solid var(--border);border-radius:var(--r2);padding:24px 22px;display:flex;gap:14px;align-items:flex-start}
+.usp-icon{font-size:1.8rem;flex-shrink:0;margin-top:2px}
+.usp-card h3{font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;margin-bottom:5px}
+.usp-card p{font-size:0.82rem;color:var(--txt2);line-height:1.55}
+
+@media(max-width:640px){
+  .hero{padding:48px 16px 38px}
+  .stats{gap:22px}
+  .tools-grid{grid-template-columns:repeat(2,1fr)}
+  .hero-btns{flex-direction:column;align-items:center}
+  .steps-grid{grid-template-columns:1fr}
+  .privacy-inner{flex-direction:column;gap:12px}
+  .stat-num{font-size:1.8rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="logo" href="index.html">
+      <div class="logo-mark">W</div>
+      <span class="logo-name">We<span>Love</span>PDF</span>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a class="nav-link active" href="index.html">All Tools</a>
+      <a class="nav-link" href="organize.html">Organize</a>
+      <a class="nav-link" href="convert.html">Convert</a>
+      <a class="nav-link" href="edit.html">Edit</a>
+      <a class="nav-link nav-dash" href="dashboard.html">📊 Dashboard</a>
+    </div>
+    <button class="nav-ham" id="navHam" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a class="nav-link active" href="index.html">🏠 All Tools</a>
+  <a class="nav-link" href="organize.html">📑 Organize</a>
+  <a class="nav-link" href="convert.html">🔄 Convert</a>
+  <a class="nav-link" href="edit.html">✏️ Edit</a>
+  <a class="nav-link nav-dash" href="dashboard.html">📊 Dashboard</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><span class="dot"></span><span id="toolCountBadge">35+</span> Free PDF Tools · Zero Uploads</div>
+  <h1>We <em>Love</em> PDF.<br>You Will Too.</h1>
+  <p class="hero-sub">Merge, split, sign, redact, compress & convert PDFs — 100% in your browser. Your files never leave your device. Ever.</p>
+  <div class="hero-btns">
+    <a href="#tools" class="btn btn-gold btn-xl">Browse All Tools ↓</a>
+    <a href="dashboard.html" class="btn btn-outline btn-xl">📊 My Dashboard</a>
+  </div>
+  <div class="stats">
+    <div class="stat-item"><div class="stat-num" id="statTools">35+</div><div class="stat-lbl">Tools</div></div>
+    <div class="stat-item"><div class="stat-num">0</div><div class="stat-lbl">Uploads</div></div>
+    <div class="stat-item"><div class="stat-num">100%</div><div class="stat-lbl">Private</div></div>
+    <div class="stat-item"><div class="stat-num">Free</div><div class="stat-lbl">Forever</div></div>
+  </div>
+</section>
+
+<!-- PRIVACY STRIP -->
+<div class="privacy-strip">
+  <div class="privacy-inner">
+    <div class="priv-item"><div class="priv-dot"></div>Files never leave your device</div>
+    <div class="priv-item"><div class="priv-dot"></div>No account required</div>
+    <div class="priv-item"><div class="priv-dot"></div>Works offline</div>
+    <div class="priv-item"><div class="priv-dot"></div>No ads, no tracking</div>
+  </div>
+</div>
+
+<!-- SEARCH -->
+<section class="search-sec">
+  <div class="search-wrap">
+    <span class="s-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Search tools… merge, sign, compress, rotate…"
+      oninput="filterTools(this.value)" autocomplete="off" spellcheck="false">
+    <button class="s-clear" id="searchClear" onclick="clearSearch()">✕ Clear</button>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section class="tools-sec" id="tools">
+  <div class="tool-count-bar">
+    <span class="tool-count-text">Showing <span class="tool-count-num" id="shownCount">0</span> tools</span>
+    <span class="tool-count-text" style="display:flex;align-items:center;gap:6px"><span style="color:var(--teal);font-size:0.85rem">●</span> All free · No account needed</span>
+  </div>
+  <div id="toolsContainer"></div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-sec">
+  <h2 class="sec-title">How It Works</h2>
+  <p class="sec-sub">Three steps. No account. No waiting. No cloud.</p>
+  <div class="steps-grid stagger">
+    <div class="step-card">
+      <div class="step-num">1</div>
+      <h3>Pick a Tool</h3>
+      <p>Choose from 35+ tools. Click any card to open it instantly — no loading screen.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">2</div>
+      <h3>Drop Your File</h3>
+      <p>Drag & drop or tap to select. All processing happens right here in your browser.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">3</div>
+      <h3>Download Result</h3>
+      <p>Hit the action button. Your processed file downloads directly to your device.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="usp-sec">
+  <h2 class="sec-title">Why WeLovePDF?</h2>
+  <p class="sec-sub">Built different from day one.</p>
+  <div class="usp-grid stagger">
+    <div class="usp-card">
+      <div class="usp-icon">🔒</div>
+      <div><h3>True Privacy</h3><p>Your PDFs never leave your device. Zero server uploads — ever. Works fully offline too.</p></div>
+    </div>
+    <div class="usp-card">
+      <div class="usp-icon">⚡</div>
+      <div><h3>Instant Processing</h3><p>No waiting for uploads or server queues. Everything runs locally at full speed.</p></div>
+    </div>
+    <div class="usp-card">
+      <div class="usp-icon">🆓</div>
+      <div><h3>Free Forever</h3><p>No file size limits, no daily caps, no premium tier. Just free tools that work.</p></div>
+    </div>
+    <div class="usp-card">
+      <div class="usp-icon">📱</div>
+      <div><h3>Works Everywhere</h3><p>Mobile, tablet, desktop — any modern browser. No app download needed.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <p class="made-by">Made with <span>❤️</span> by Abhishek &nbsp;·&nbsp; <a href="dashboard.html" style="color:var(--txt3);text-decoration:none;font-size:0.85rem">Dashboard</a></p>
+</footer>
+
+<script>
+const CATS = [
+  {id:'organize', name:'Organize',        color:'dot-organize'},
+  {id:'edit',     name:'Edit & Annotate', color:'dot-edit'},
+  {id:'convert',  name:'Convert',         color:'dot-convert'},
+  {id:'analyze',  name:'Analyze',         color:'dot-analyze'},
+  {id:'utility',  name:'Utility & View',  color:'dot-utility'},
+  {id:'create',   name:'Create',          color:'dot-create'},
+];
+
+const TOOLS = [
+  // ORGANIZE
+  {id:'merge',         icon:'🔗', name:'Merge PDF',          desc:'Combine multiple PDFs into one file',                           cat:'organize', badge:'pop',
+   tip:'Upload 2 or more PDFs and drag to reorder. Download a single merged PDF.'},
+  {id:'split',         icon:'✂️', name:'Split PDF',           desc:'Split into separate files or page ranges',                      cat:'organize',
+   tip:'Enter page ranges like "1-3, 5, 7-9" to split into multiple PDFs.'},
+  {id:'removepages',   icon:'🗑️', name:'Remove Pages',        desc:'Click page thumbnails to mark & delete',                        cat:'organize',
+   tip:'Visually select which pages to remove. Click a thumbnail to mark it for deletion.'},
+  {id:'reorder',       icon:'↕️', name:'Reorder Pages',       desc:'Drag thumbnails to rearrange page order',                       cat:'organize',
+   tip:'Drag page thumbnails to any position. Download the reordered PDF.'},
+  {id:'rotate',        icon:'🔄', name:'Rotate Pages',        desc:'Rotate pages 90°, 180° or 270°',                                cat:'organize',
+   tip:'Select specific pages or all pages, then choose rotation angle.'},
+  {id:'reverse',       icon:'🔁', name:'Reverse Pages',       desc:'Flip the entire page order instantly',                          cat:'organize',
+   tip:'Reverses the order of all pages (last page becomes first).'},
+  {id:'extractpages',  icon:'📌', name:'Extract Pages',       desc:'Pull specific pages into a new PDF',                            cat:'organize', badge:'new',
+   tip:'Select pages by clicking thumbnails or entering numbers. Saves selected pages as new PDF.'},
+  {id:'resize',        icon:'📐', name:'Resize Pages',        desc:'Change dimensions: A4 ↔ Letter ↔ custom',                       cat:'organize',
+   tip:'Resize all pages to standard formats or enter custom width/height in mm.'},
+  // EDIT
+  {id:'pagenumber',    icon:'🔢', name:'Add Page Numbers',    desc:'Customisable numbering, font & position',                       cat:'edit',
+   tip:'Choose position (top/bottom, left/center/right), font size, and starting number.'},
+  {id:'watermark',     icon:'💧', name:'Watermark PDF',       desc:'Add diagonal text watermark on every page',                     cat:'edit',
+   tip:'Type your watermark text, adjust opacity, size and rotation angle.'},
+  {id:'crop',          icon:'⬛', name:'Crop PDF',            desc:'Trim page margins — set custom cropbox',                        cat:'edit',
+   tip:'Enter margin values (top, right, bottom, left) in points to crop all pages.'},
+  {id:'flatten',       icon:'📋', name:'Flatten PDF',         desc:'Flatten forms, fields & annotations',                           cat:'edit',
+   tip:'Flattens interactive form fields into static content. Useful before sharing.'},
+  {id:'metadata',      icon:'🏷️', name:'Edit Metadata',       desc:'Change title, author, subject & keywords',                      cat:'edit',
+   tip:'Edit the hidden document properties like author name, title and creation date.'},
+  {id:'addtext',       icon:'📝', name:'Add Text',            desc:'Place freely movable text anywhere on page',                    cat:'edit', badge:'new',
+   tip:'Click anywhere on the page to add a text box. Drag it to the exact position you want.'},
+  {id:'sign',          icon:'✍️', name:'Sign PDF',            desc:'Draw your signature & drag to exact position',                  cat:'edit', badge:'hot',
+   tip:'Draw your signature on a pad, then drag it precisely onto any page. Resize as needed.'},
+  {id:'redact',        icon:'⬛', name:'Redact PDF',          desc:'Draw black boxes over sensitive content',                       cat:'edit', badge:'new',
+   tip:'Draw redaction boxes by clicking and dragging. Add multiple boxes on any page. Permanently burns in.'},
+  {id:'header',        icon:'🔖', name:'Add Header/Footer',   desc:'Custom text on every page top & bottom',                        cat:'edit',
+   tip:'Add page numbers, dates or custom text to headers and footers on all pages.'},
+  // CONVERT
+  {id:'compress',      icon:'🗜️', name:'Compress PDF',        desc:'Reduce file size — re-renders pages',                           cat:'convert', badge:'pop',
+   tip:'Re-renders each page at reduced quality. Best for PDFs with lots of images.'},
+  {id:'grayscale',     icon:'🌑', name:'Grayscale PDF',       desc:'Convert colour PDF to black & white',                           cat:'convert',
+   tip:'Converts all pages to greyscale by re-rendering through canvas. Good for print savings.'},
+  {id:'darkpdf',       icon:'🌙', name:'Dark / Invert PDF',   desc:'Invert all colours for night reading',                          cat:'convert', badge:'new',
+   tip:'Inverts all page colours — turns white pages dark for comfortable night reading.'},
+  {id:'pdf2img',       icon:'🖼️', name:'PDF → Images',        desc:'Export every page as JPG or PNG file',                          cat:'convert',
+   tip:'Choose JPG or PNG format and quality. Each page is saved as a separate image.'},
+  {id:'img2pdf',       icon:'📷', name:'Images → PDF',        desc:'Combine multiple images into one PDF',                          cat:'convert',
+   tip:'Upload JPG, PNG or WebP images. Drag to reorder before combining into PDF.'},
+  {id:'pdf2text',      icon:'📄', name:'PDF → Text',          desc:'Extract all readable text from PDF',                            cat:'convert',
+   tip:'Extracts all text content from the PDF. Works on text-based PDFs (not scanned images).'},
+  {id:'extractimages', icon:'🎨', name:'Extract Images',      desc:'Save each page as a JPG image file',                            cat:'convert',
+   tip:'Renders and saves every page of the PDF as a separate JPG image.'},
+  {id:'html2pdf',      icon:'🌐', name:'HTML → PDF',          desc:'Paste HTML and convert to PDF via print',                       cat:'convert',
+   tip:'Paste your HTML code, preview it, then use the browser print dialog to save as PDF.'},
+  // ANALYZE
+  {id:'inspector',     icon:'🔍', name:'PDF Inspector',       desc:'Page count, file size, fonts & metadata',                       cat:'analyze', badge:'new',
+   tip:'Reveals all document metadata, page dimensions, and embedded font information.'},
+  {id:'wordcount',     icon:'🔢', name:'Word & Page Count',   desc:'Total words, characters & reading time',                        cat:'analyze',
+   tip:'Counts words, characters, sentences and estimates reading time for the full document.'},
+  {id:'compare',       icon:'⚖️', name:'Compare PDFs',        desc:'Find text similarities & differences',                          cat:'analyze',
+   tip:'Upload two PDFs and see a similarity score with highlighted text differences.'},
+  // UTILITY
+  {id:'viewer',        icon:'👁️', name:'PDF Viewer',          desc:'Full-featured in-browser PDF viewer',                           cat:'utility',
+   tip:'View any PDF in full screen with page navigation, zoom, and rotation controls.'},
+  {id:'repair',        icon:'🔧', name:'Repair PDF',          desc:'Fix minor corruption by re-saving cleanly',                     cat:'utility',
+   tip:'Reloads and re-saves the PDF structure. Fixes many minor corruption issues.'},
+  {id:'extracttext',   icon:'📤', name:'Extract Text (Pages)' ,desc:'Extract text from specific page range',                       cat:'utility',
+   tip:'Like PDF → Text but lets you extract only selected page numbers.'},
+  // CREATE
+  {id:'blank',         icon:'➕', name:'Create Blank PDF',    desc:'New PDF with custom size & background',                         cat:'create',
+   tip:'Choose paper size, orientation, number of pages and background colour.'},
+  {id:'coverpage',     icon:'🎨', name:'Add Cover Page',      desc:'Insert a styled cover with title & author',                     cat:'create', badge:'new',
+   tip:'Creates a formatted cover page and inserts it at the start of your PDF.'},
+];
+
+const BADGES = {
+  hot: `<span class="tc-badge badge-hot">🔥 Hot</span>`,
+  new: `<span class="tc-badge badge-new">✨ New</span>`,
+  pop: `<span class="tc-badge badge-pop">⭐ Popular</span>`,
+};
+
+function toolCardHTML(t) {
+  return `<a class="tool-card" href="tool.html?t=${t.id}" title="${t.name}">
+    ${t.badge ? BADGES[t.badge] : ''}
+    ${t.tip ? `<span class="tc-info info-icon" onclick="event.preventDefault()" title="${t.tip}">i<span class="tooltip">${t.tip}</span></span>` : ''}
+    <span class="tc-icon">${t.icon}</span>
+    <div class="tc-name">${t.name}</div>
+    <div class="tc-desc">${t.desc}</div>
+  </a>`;
+}
+
+function renderHome(filter = '') {
+  const c = document.getElementById('toolsContainer');
+  let html = '', total = 0;
+  CATS.forEach(cat => {
+    const tools = TOOLS.filter(t => t.cat === cat.id && (!filter ||
+      t.name.toLowerCase().includes(filter) ||
+      t.desc.toLowerCase().includes(filter) ||
+      t.id.toLowerCase().includes(filter) ||
+      (t.tip||'').toLowerCase().includes(filter)));
+    if (!tools.length) return;
+    total += tools.length;
+    html += `<div class="cat-header">
+      <div class="cat-dot ${cat.color}"></div>
+      <div class="cat-name">${cat.name}</div>
+      <span class="cat-count">${tools.length}</span>
+      <div class="cat-line"></div>
+    </div>
+    <div class="tools-grid stagger">${tools.map(toolCardHTML).join('')}</div>`;
+  });
+
+  if (!total) {
+    html = `<div class="no-results">
+      <div class="nr-icon">🔍</div>
+      <div style="font-size:1.05rem;font-weight:600;margin-bottom:8px">No tools found</div>
+      <div style="font-size:0.88rem;color:var(--txt3)">Try searching for "merge", "compress", "sign"…</div>
+    </div>`;
+  }
+
+  c.innerHTML = html;
+  document.getElementById('shownCount').textContent = total;
+  document.getElementById('statTools').textContent  = TOOLS.length + '+';
+  document.getElementById('toolCountBadge').textContent = TOOLS.length + '+';
+}
+
+function filterTools(v) {
+  document.getElementById('searchClear').style.display = v ? 'block' : 'none';
+  renderHome(v.toLowerCase().trim());
+}
+
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  filterTools('');
+}
+
+// Scroll-up button (also added by utils.js but ensure it's here for safety)
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('scrollUp');
+  if (btn) btn.classList.toggle('visible', window.scrollY > 300);
+}, { passive: true });
+
+// Mobile hamburger (simple inline version as utils.js may not be loaded here)
+document.addEventListener('DOMContentLoaded', () => {
+  renderHome();
+
+  const ham  = document.getElementById('navHam');
+  const menu = document.getElementById('mobileMenu');
+  if (ham && menu) {
+    ham.addEventListener('click', () => {
+      menu.classList.toggle('open');
+      const open = menu.classList.contains('open');
+      const spans = ham.querySelectorAll('span');
+      spans[0].style.transform = open ? 'rotate(45deg) translate(4px,4px)' : '';
+      spans[1].style.opacity   = open ? '0' : '1';
+      spans[2].style.transform = open ? 'rotate(-45deg) translate(4px,-4px)' : '';
+    });
+  }
+
+  // Inject scroll-up button
+  if (!document.getElementById('scrollUp')) {
+    const btn = document.createElement('button');
+    btn.id = 'scrollUp'; btn.title = 'Back to top';
+    btn.innerHTML = '↑';
+    btn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.body.appendChild(btn);
+  }
+});
+</script>
+</body>
+</html>
